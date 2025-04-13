@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - SPX STUDIO</title>
+    <link rel="stylesheet" href="../public/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="spx_studio-removebg-preview.png">
+   <style>
+        /* Blog page specific styles */
+        .blog-header {
+            background: linear-gradient(rgba(20, 33, 61, 0.8), rgba(58, 134, 255, 0.7));
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .blog-header h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .blog-container {
+            padding: 80px 0;
+            background-color: var(--light-color);
+        }
+        
+        .blog-layout {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 40px;
+        }
+        
+        .blog-filter {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .blog-search {
+            display: flex;
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .blog-search input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            font-size: 1rem;
+        }
+        
+        .blog-search button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .blog-search button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .blog-categories {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .category-button {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .category-button:hover, .category-button.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .blog-post-large {
+            grid-column: span 2;
+            display: grid;
+            grid-template-columns: 2fr 3fr;
+            gap: 30px;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+        }
+        
+        .blog-image-large {
+            height: 100%;
+            min-height: 300px;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .blog-content-large {
+            padding: 30px;
+        }
+        
+        .blog-post {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+        
+        .blog-post:hover {
+            transform: translateY(-10px);
+        }
+        
+        .blog-image {
+            height: 200px;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .blog-content {
+            padding: 20px;
+        }
+        
+        .tag {
+            display: inline-block;
+            background-color: rgba(58, 134, 255, 0.1);
+            color: var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .blog-content h3 {
+            margin: 15px 0;
+            font-size: 1.4rem;
+        }
+        
+        .blog-content-large h2 {
+            margin: 15px 0;
+            font-size: 2rem;
+        }
+        
+        .blog-meta {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .blog-meta img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: #ddd;
+        }
+        
+        .blog-meta span {
+            margin-right: 15px;
+        }
+        
+        .blog-meta i {
+            margin-right: 5px;
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+        }
+        
+        .sidebar-widget {
+            margin-bottom: 40px;
+        }
+        
+        .sidebar-widget:last-child {
+            margin-bottom: 0;
+        }
+        
+        .sidebar-widget h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .recent-post {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .recent-post-image {
+            width: 70px;
+            height: 70px;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .recent-post-content h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+        .recent-post-content .date {
+            font-size: 0.8rem;
+        }
+        
+        .tags-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .pagination {
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .pagination a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            background-color: white;
+            border-radius: 5px;
+            margin: 0 5px;
+            color: var(--text-color);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+        
+        .pagination a:hover, .pagination a.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .pagination .prev, .pagination .next {
+            width: auto;
+            padding: 0 15px;
+        }
+        
+        @media (max-width: 1024px) {
+            .blog-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                margin-top: 40px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .blog-post-large {
+                grid-column: span 1;
+                grid-template-columns: 1fr;
+            }
+            
+            .blog-image-large {
+                height: 200px;
+            }
+            
+            .blog-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>SPX STUDIO</h1>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="premium.html">Premium</a></li>
+                    <li><a href="upload.html">Upload</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <a href="login.html" class="login-btn">Login</a>
+                <a href="signup.html" class="signup-btn">Sign Up</a>
+            </div>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <section class="blog-header">
+        <div class="container">
+            <h1>SPX STUDIO Blog</h1>
+            <p>Insights, news, and stories from our creative experts</p>
+        </div>
+    </section>
+
+    <section class="blog-container">
+        <div class="container">
+            <div class="blog-filter">
+                <div class="blog-search">
+                    <input type="text" placeholder="Search blog posts...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <div class="blog-categories">
+                    <button class="category-button active">All</button>
+                    <button class="category-button">Design</button>
+                    <button class="category-button">Development</button>
+                    <button class="category-button">Marketing</button>
+                    <button class="category-button">Business</button>
+                </div>
+            </div>
+            
+            <div class="blog-layout">
+                <div class="blog-main">
+                    <div class="blog-post-large">
+                        <div class="blog-image-large"></div>
+                        <div class="blog-content-large">
+                            <div class="tags">
+                                <span class="tag">Featured</span>
+                                <span class="tag">Design</span>
+                            </div>
+                            <h2>Design Trends for 2025 That Will Transform Your Brand</h2>
+                            <div class="blog-meta">
+                                <img src="#" alt="Author">
+                                <span>By Sarah Johnson</span>
+                                <span><i class="far fa-calendar"></i> April 10, 2025</span>
+                                <span><i class="far fa-comment"></i> 24 Comments</span>
+                            </div>
+                            <p>Explore the latest design trends that are shaping the creative industry this year and discover how they can transform your brand identity to stand out from the competition.</p>
+                            <p>From minimalist aesthetics to bold typography and immersive 3D elements, these trends are defining the visual language of successful brands in 2025.</p>
+                            <a href="blog-post.html" class="btn secondary-btn">Read Full Article</a>
+                        </div>
+                    </div>
+                    
+                    <div class="blog-grid">
+                        <div class="blog-post">
+                            <div class="blog-image"></div>
+                            <div class="blog-content">
+                                <div class="tags">
+                                    <span class="tag">Marketing</span>
+                                </div>
+                                <h3>Maximizing Business Growth in the Digital Age</h3>
+                                <div class="blog-meta">
+                                    <img src="#" alt="Author">
+                                    <span>By David Chen</span>
+                                    <span><i class="far fa-calendar"></i> April 5, 2025</span>
+                                </div>
+                                <p>Learn effective strategies to maximize your business growth in the digital age, focusing on customer acquisition, retention, and data-driven decision making.</p>
+                                <a href="blog-post.html" class="read-more">Read More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="blog-post">
+                            <div class="blog-image"></div>
+                            <div class="blog-content">
+                                <div class="tags">
+                                    <span class="tag">Development</span>
+                                </div>
+                                <h3>The Future of Web Development: Emerging Technologies</h3>
+                                <div class="blog-meta">
+                                    <img src="#" alt="Author">
+                                    <span>By Michael Lopez</span>
+                                    <span><i class="far fa-calendar"></i> March 28, 2025</span>
+                                </div>
+                                <p>Discover the emerging technologies that will shape the future of web development, from AI integration to WebAssembly and serverless architectures.</p>
+                                <a href="blog-post.html" class="read-more">Read More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="blog-post">
+                            <div class="blog-image"></div>
+                            <div class="blog-content">
+                                <div class="tags">
+                                    <span class="tag">Business</span>
+                                </div>
+                                <h3>How to Build a Sustainable Business Model</h3>
+                                <div class="blog-meta">
+                                    <img src="#" alt="Author">
+                                    <span>By Emma Taylor</span>
+                                    <span><i class="far fa-calendar"></i> March 20, 2025</span>
+                                </div>
+                                <p>Explore the key principles behind creating a sustainable business model that balances profit, people, and the planet for long-term success.</p>
+                                <a href="blog-post.html" class="read-more">Read More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="blog-post">
+                            <div class="blog-image"></div>
+                            <div class="blog-content">
+                                <div class="tags">
+                                    <span class="tag">Design</span>
+                                </div>
+                                <h3>Color Psychology in Brand Design</h3>
+                                <div class="blog-meta">
+                                    <img src="#" alt="Author">
+                                    <span>By Alex Wong</span>
+                                    <span><i class="far fa-calendar"></i> March 15, 2025</span>
+                                </div>
+                                <p>Understand how color psychology influences consumer perception and learn how to strategically use color to enhance your brand messaging.</p>
+                                <a href="blog-post.html" class="read-more">Read More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="blog-post">
+                            <div class="blog-image"></div>
+                            <div class="blog-content">
+                                <div class="tags">
+                                    <span class="tag">Marketing</span>
+                                </div>
+                                <h3>Content Marketing Strategies for 2025</h3>
+                                <div class="blog-meta">
+                                    <img src="#" alt="Author">
+                                    <span>By Jessica Miller</span>
+                                    <span><i class="far fa-calendar"></i> March 8, 2025</span>
+                                </div>
+                                <p>Discover the most effective content marketing strategies for 2025 that will help you engage your audience and drive conversions.</p>
+                                <a href="blog-post.html" class="read-more">Read More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="blog-post">
+                            <div class="blog-image"></div>
+                            <div class="blog-content">
+                                <div class="tags">
+                                    <span class="tag">Development</span>
+                                </div>
+                                <h3>Building Accessible Web Applications</h3>
+                                <div class="blog-meta">
+                                    <img src="#" alt="Author">
+                                    <span>By Robert Johnson</span>
+                                    <span><i class="far fa-calendar"></i> March 1, 2025</span>
+                                </div>
+                                <p>Learn the best practices for creating web applications that are accessible to all users, including those with disabilities.</p>
+                                <a href="blog-post.html" class="read-more">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pagination">
+                        <a href="#" class="prev"><i class="fas fa-chevron-left"></i> Prev</a>
+                        <a href="#" class="active">1</a>
+                        <a href="#">2</a>
+                        <a href="#">3</a>
+                        <a href="#">4</a>
+                        <a href="#" class="next">Next <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="sidebar">
+                    <div class="sidebar-widget">
+                        <h3>Categories</h3>
+                        <ul>
+                            <li><a href="#">Design <span>(12)</span></a></li>
+                            <li><a href="#">Development <span>(9)</span></a></li>
+                            <li><a href="#">Marketing <span>(15)</span></a></li>
+                            <li><a href="#">Business <span>(8)</span></a></li>
+                            <li><a href="#">Analytics <span>(6)</span></a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="sidebar-widget">
+                        <h3>Recent Posts</h3>
+                        <div class="recent-posts">
+                            <div class="recent-post">
+                                <div class="recent-post-image"></div>
+                                <div class="recent-post-content">
+                                    <h4><a href="blog-post.html">Design Trends for 2025</a></h4>
+                                    <span class="date">April 10, 2025</span>
+                                </div>
+                            </div>
+                            <div class="recent-post">
+                                <div class="recent-post-image"></div>
+                                <div class="recent-post-content">
+                                    <h4><a href="blog-post.html">Maximizing Business Growth</a></h4>
+                                    <span class="date">April 5, 2025</span>
+                                </div>
+                            </div>
+                            <div class="recent-post">
+                                <div class="recent-post-image"></div>
+                                <div class="recent-post-content">
+                                    <h4><a href="blog-post.html">The Future of Web Development</a></h4>
+                                    <span class="date">March 28, 2025</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-widget">
+                        <h3>Popular Tags</h3>
+                        <div class="tags-cloud">
+                            <a href="#" class="tag">Design</a>
+                            <a href="#" class="tag">Development</a>
+                            <a href="#" class="tag">UX</a>
+                            <a href="#" class="tag">Marketing</a>
+                            <a href="#" class="tag">Business</a>
+                            <a href="#" class="tag">Trends</a>
+                            <a href="#" class="tag">Technology</a>
+                            <a href="#" class="tag">Strategy</a>
+                            <a href="#" class="tag">Branding</a>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-widget">
+                        <h3>Subscribe</h3>
+                        <p>Get the latest articles and resources directly to your inbox.</p>
+                        <form>
+                            <div class="form-group">
+                                <input type="email" placeholder="Your email address" required>
+                            </div>
+                            <button type="submit" class="btn primary-btn">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-logo">
+                    <h2>SPX STUDIO</h2>
+                    <p>Professional creative services for your business needs</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="events.html">Events</a></li>
+                        <li><a href="premium.html">Premium</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="services.html#design">Design</a></li>
+                        <li><a href="services.html#development">Development</a></li>
+                        <li><a href="services.html#marketing">Marketing</a></li>
+                        <li><a href="services.html#analytics">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Business Ave, Suite 100, New York, NY 10001</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@spxstudio.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SPX STUDIO. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../public/js/main.js"></script>
+</body>
+</html>

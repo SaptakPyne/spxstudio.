@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload - SPX STUDIO</title>
+    <link rel="stylesheet" href="../public/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="spx_studio-removebg-preview.png">
+    <style>
+        /* Upload page specific styles */
+        .upload-section {
+            padding: 80px 0;
+            background-color: var(--light-color);
+        }
+        
+        .upload-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+        
+        .upload-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .upload-header h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .upload-types {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .upload-tab {
+            padding: 12px 25px;
+            margin: 0 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+        
+        .upload-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .upload-tab:hover:not(.active) {
+            background-color: #e9ecef;
+        }
+        
+        .upload-content {
+            margin-top: 20px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .dropzone {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dropzone:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .dropzone i {
+            font-size: 3rem;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+        
+        .dropzone p {
+            color: #666;
+        }
+        
+        .browse-files {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .format-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .format-info h4 {
+            margin-bottom: 10px;
+        }
+        
+        .format-info ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        
+        .format-info li {
+            margin-bottom: 5px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .upload-button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .upload-button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Progress bar styles */
+        .progress-container {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-status {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* File list styles */
+        .file-list {
+            margin-top: 20px;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .file-icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        
+        .file-name {
+            font-weight: 600;
+        }
+        
+        .file-size {
+            color: #666;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+        
+        .file-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+        
+        .file-actions button:hover {
+            color: var(--primary-color);
+        }
+        
+        @media (max-width: 768px) {
+            .upload-types {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .upload-tab {
+                width: 100%;
+                margin: 5px 0;
+                text-align: center;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>SPX STUDIO</h1>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="premium.html">Premium</a></li>
+                    <li><a href="upload.html">Upload</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <a href="login.html" class="login-btn">Login</a>
+                <a href="signup.html" class="signup-btn">Sign Up</a>
+            </div>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <section class="upload-section">
+        <div class="container">
+            <div class="upload-container">
+                <div class="upload-header">
+                    <h1>Upload Your Files</h1>
+                    <p>Share your data and files with the SPX STUDIO community</p>
+                </div>
+                
+                <div class="upload-types">
+                    <div class="upload-tab active" data-tab="data">Data Files</div>
+                    <div class="upload-tab" data-tab="image">Images</div>
+                    <div class="upload-tab" data-tab="video">Video</div>
+                    <div class="upload-tab" data-tab="document">Documents</div>
+                </div>
+                
+                <div class="upload-content">
+                    <!-- Data Files Tab -->
+                    <div id="data-tab" class="tab-content active">
+                        <div class="dropzone" id="data-dropzone">
+                            <i class="fas fa-file-csv"></i>
+                            <h3>Drag & Drop your data files here</h3>
+                            <p>or <span class="browse-files">browse files</span> from your computer</p>
+                            <input type="file" id="data-file-input" multiple style="display: none;">
+                        </div>
+                        
+                        <div class="format-info">
+                            <h4>Supported Formats:</h4>
+                            <ul>
+                                <li>CSV (.csv)</li>
+                                <li>Excel (.xlsx, .xls)</li>
+                                <li>JSON (.json)</li>
+                                <li>XML (.xml)</li>
+                                <li>Text Files (.txt)</li>
+                            </ul>
+                            <p><strong>Max file size:</strong> 100MB per file</p>
+                        </div>
+                        
+                        <div class="file-list" id="data-file-list">
+                            <!-- Files will be added here dynamically -->
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="data-description">Description</label>
+                            <textarea id="data-description" name="description" rows="3" placeholder="Describe what your data contains and how it should be used"></textarea>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="data-category">Category</label>
+                                <select id="data-category" name="category">
+                                    <option value="">Select a category</option>
+                                    <option value="business">Business</option>
+                                    <option value="finance">Finance</option>
+                                    <option value="marketing">Marketing</option>
+                                    <option value="research">Research</option>
+                                    <option value="education">Education</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="data-privacy">Privacy</label>
+                                <select id="data-privacy" name="privacy">
+                                    <option value="public">Public (Anyone can view)</option>
+                                    <option value="restricted">Restricted (Registered users only)</option>
+                                    <option value="private">Private (Only you)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-container" id="data-progress">
+                            <div class="progress-bar">
+                                <div class="progress" id="data-progress-bar"></div>
+                            </div>
+                            <div class="progress-status">
+                                <span id="data-progress-text">0% Complete</span>
+                                <span id="data-progress-size">0MB / 0MB</span>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="upload-button" id="data-upload-btn">Upload Files</button>
+                    </div>
+                    
+                    <!-- Images Tab -->
+                    <div id="image-tab" class="tab-content">
+                        <div class="dropzone" id="image-dropzone">
+                            <i class="fas fa-images"></i>
+                            <h3>Drag & Drop your images here</h3>
+                            <p>or <span class="browse-files">browse files</span> from your computer</p>
+                            <input type="file" id="image-file-input" accept="image/*" multiple style="display: none;">
+                        </div>
+                        
+                        <div class="format-info">
+                            <h4>Supported Formats:</h4>
+                            <ul>
+                                <li>JPEG (.jpg, .jpeg)</li>
+                                <li>PNG (.png)</li>
+                                <li>GIF (.gif)</li>
+                                <li>SVG (.svg)</li>
+                                <li>WebP (.webp)</li>
+                            </ul>
+                            <p><strong>Max file size:</strong> 20MB per image</p>
+                        </div>
+                        
+                        <div class="file-list" id="image-file-list">
+                            <!-- Images will be added here dynamically -->
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="image-title">Title</label>
+                            <input type="text" id="image-title" name="title" placeholder="Give your images a title">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="image-description">Description</label>
+                            <textarea id="image-description" name="description" rows="3" placeholder="Describe your images"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="image-tags">Tags (comma separated)</label>
+                            <input type="text" id="image-tags" name="tags" placeholder="art, design, nature, etc.">
+                        </div>
+                        
+                        <div class="progress-container" id="image-progress">
+                            <div class="progress-bar">
+                                <div class="progress" id="image-progress-bar"></div>
+                            </div>
+                            <div class="progress-status">
+                                <span id="image-progress-text">0% Complete</span>
+                                <span id="image-progress-size">0MB / 0MB</span>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="upload-button" id="image-upload-btn">Upload Images</button>
+                    </div>
+                    
+                    <!-- Video Tab -->
+                    <div id="video-tab" class="tab-content">
+                        <div class="dropzone" id="video-dropzone">
+                            <i class="fas fa-video"></i>
+                            <h3>Drag & Drop your videos here</h3>
+                            <p>or <span class="browse-files">browse files</span> from your computer</p>
+                            <input type="file" id="video-file-input" accept="video/*" multiple style="display: none;">
+                        </div>
+                        
+                        <div class="format-info">
+                            <h4>Supported Formats:</h4>
+                            <ul>
+                                <li>MP4 (.mp4)</li>
+                                <li>WebM (.webm)</li>
+                                <li>MOV (.mov)</li>
+                                <li>AVI (.avi)</li>
+                            </ul>
+                            <p><strong>Max file size:</strong> 1GB per video</p>
+                        </div>
+                        
+                        <div class="file-list" id="video-file-list">
+                            <!-- Videos will be added here dynamically -->
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="video-title">Title</label>
+                                <input type="text" id="video-title" name="title" placeholder="Give your video a title">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="video-category">Category</label>
+                                <select id="video-category" name="category">
+                                    <option value="">Select a category</option>
+                                    <option value="tutorial">Tutorial</option>
+                                    <option value="portfolio">Portfolio</option>
+                                    <option value="event">Event</option>
+                                    <option value="promotion">Promotion</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="video-description">Description</label>
+                            <textarea id="video-description" name="description" rows="3" placeholder="Describe your video"></textarea>
+                        </div>
+                        
+                        <div class="progress-container" id="video-progress">
+                            <div class="progress-bar">
+                                <div class="progress" id="video-progress-bar"></div>
+                            </div>
+                            <div class="progress-status">
+                                <span id="video-progress-text">0% Complete</span>
+                                <span id="video-progress-size">0MB / 0MB</span>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="upload-button" id="video-upload-btn">Upload Video</button>
+                    </div>
+                    
+                    <!-- Documents Tab -->
+                    <div id="document-tab" class="tab-content">
+                        <div class="dropzone" id="document-dropzone">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>Drag & Drop your documents here</h3>
+                            <p>or <span class="browse-files">browse files</span> from your computer</p>
+                            <input type="file" id="document-file-input" multiple style="display: none;">
+                        </div>
+                        
+                        <div class="format-info">
+                            <h4>Supported Formats:</h4>
+                            <ul>
+                                <li>PDF (.pdf)</li>
+                                <li>Word (.docx, .doc)</li>
+                                <li>PowerPoint (.pptx, .ppt)</li>
+                                <li>Excel (.xlsx, .xls)</li>
+                                <li>Text Files (.txt)</li>
+                            </ul>
+                            <p><strong>Max file size:</strong> 50MB per document</p>
+                        </div>
+                        
+                        <div class="file-list" id="document-file-list">
+                            <!-- Documents will be added here dynamically -->
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="document-title">Title</label>
+                            <input type="text" id="document-title" name="title" placeholder="Give your documents a title">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="document-description">Description</label>
+                            <textarea id="document-description" name="description" rows="3" placeholder="Describe your documents"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="document-privacy">Privacy</label>
+                            <select id="document-privacy" name="privacy">
+                                <option value="public">Public (Anyone can view)</option>
+                                <option value="restricted">Restricted (Registered users only)</option>
+                                <option value="private">Private (Only you)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="progress-container" id="document-progress">
+                            <div class="progress-bar">
+                                <div class="progress" id="document-progress-bar"></div>
+                            </div>
+                            <div class="progress-status">
+                                <span id="document-progress-text">0% Complete</span>
+                                <span id="document-progress-size">0MB / 0MB</span>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="upload-button" id="document-upload-btn">Upload Documents</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-logo">
+                    <h2>SPX STUDIO</h2>
+                    <p>Professional creative services for your business needs</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="events.html">Events</a></li>
+                        <li><a href="premium.html">Premium</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="services.html#design">Design</a></li>
+                        <li><a href="services.html#development">Development</a></li>
+                        <li><a href="services.html#marketing">Marketing</a></li>
+                        <li><a href="services.html#analytics">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Business Ave, Suite 100, New York, NY 10001</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@spxstudio.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SPX STUDIO. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../public/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching functionality
+        document.querySelectorAll('.upload-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and tab contents
+                document.querySelectorAll('.upload-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding tab content
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
+        });
+        
+        // Dropzone functionality (for all tabs)
+        ['data', 'image', 'video', 'document'].forEach(type => {
+            const dropzone = document.getElementById(`${type}-dropzone`);
+            const fileInput = document.getElementById(`${type}-file-input`);
+            const fileList = document.getElementById(`${type}-file-list`);
+            
+            dropzone.addEventListener('click', () => {
+                fileInput.click();
+            });
+            
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = 'var(--primary-color)';
+                dropzone.style.backgroundColor = '#f8f9fa';
+            });
+            
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.style.borderColor = '#ddd';
+                dropzone.style.backgroundColor = 'transparent';
+            });
+            
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = '#ddd';
+                dropzone.style.backgroundColor = 'transparent';
+                
+                if (e.dataTransfer.files.length > 0) {
+                    handleFiles(e.dataTransfer.files, type);
+                }
+            });
+            
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length > 0) {
+                    handleFiles(fileInput.files, type);
+                }
+            });
+            
+            // Upload button functionality
+            document.getElementById(`${type}-upload-btn`).addEventListener('click', () => {
+                // Call the upload function that connects to our backend API
+                uploadFiles(type);
+            });
+        });
+        
+        function handleFiles(files, type) {
+            const fileList = document.getElementById(`${type}-file-list`);
+            
+            // Clear existing list
+            fileList.innerHTML = '';
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                // Create file item element
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                
+                // Determine file icon based on type
+                let fileIconClass = 'fas fa-file';
+                if (file.type.startsWith('image/')) {
+                    fileIconClass = 'fas fa-file-image';
+                } else if (file.type.startsWith('video/')) {
+                    fileIconClass = 'fas fa-file-video';
+                } else if (file.type.startsWith('application/pdf')) {
+                    fileIconClass = 'fas fa-file-pdf';
+                } else if (file.type.startsWith('application/vnd.ms-excel') || 
+                           file.type.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml')) {
+                    fileIconClass = 'fas fa-file-excel';
+                } else if (file.type.startsWith('text/')) {
+                    fileIconClass = 'fas fa-file-alt';
+                }
+                
+                // Format file size
+                const fileSize = formatFileSize(file.size);
+                
+                fileItem.innerHTML = `
+                    <div class="file-info">
+                        <i class="${fileIconClass} file-icon"></i>
+                        <span class="file-name">${file.name}</span>
+                        <span class="file-size">${fileSize}</span>
+                    </div>
+                    <div class="file-actions">
+                        <button type="button" class="remove-file" title="Remove file">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                
+                // Add event listener to remove button
+                fileItem.querySelector('.remove-file').addEventListener('click', () => {
+                    fileItem.remove();
+                });
+                
+                fileList.appendChild(fileItem);
+            }
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function uploadFiles(type) {
+            const fileList = document.getElementById(`${type}-file-list`);
+            
+            if (fileList.children.length === 0) {
+                alert('Please select files to upload first.');
+                return;
+            }
+            
+            const progressContainer = document.getElementById(`${type}-progress`);
+            const progressBar = document.getElementById(`${type}-progress-bar`);
+            const progressText = document.getElementById(`${type}-progress-text`);
+            const progressSize = document.getElementById(`${type}-progress-size`) || document.createElement('span');
+            const uploadBtn = document.getElementById(`${type}-upload-btn`);
+            
+            // Map file types to API endpoints
+            const typeMap = {
+                'data': 'data',
+                'image': 'images',
+                'video': 'videos',
+                'document': 'documents'
+            };
+            
+            // Get all files from the file list
+            const fileItems = fileList.querySelectorAll('.file-item');
+            if (fileItems.length === 0) {
+                alert('Please select files to upload first.');
+                return;
+            }
+            
+            // Create FormData object
+            const formData = new FormData();
+            
+            // Get actual file objects from input
+            const fileInput = document.getElementById(`${type}-file-input`);
+            if (fileInput.files.length > 0) {
+                Array.from(fileInput.files).forEach(file => {
+                    formData.append('files', file);
+                });
+            } else {
+                alert('Please select files to upload first.');
+                return;
+            }
+            
+            // Add metadata based on type
+            if (type === 'data') {
+                const description = document.getElementById('data-description').value;
+                const category = document.getElementById('data-category').value;
+                const privacy = document.getElementById('data-privacy').value;
+                
+                formData.append('description', description);
+                formData.append('category', category);
+                formData.append('privacy', privacy);
+            } else if (type === 'image') {
+                const title = document.getElementById('image-title').value;
+                const description = document.getElementById('image-description').value;
+                const tags = document.getElementById('image-tags').value;
+                
+                formData.append('title', title);
+                formData.append('description', description);
+                formData.append('tags', tags);
+            } else if (type === 'video') {
+                const title = document.getElementById('video-title').value;
+                const description = document.getElementById('video-description').value;
+                const tags = document.getElementById('video-tags').value;
+                
+                formData.append('title', title);
+                formData.append('description', description);
+                formData.append('tags', tags);
+            } else if (type === 'document') {
+                const title = document.getElementById('document-title').value;
+                const description = document.getElementById('document-description').value;
+                const category = document.getElementById('document-category').value;
+                
+                formData.append('title', title);
+                formData.append('description', description);
+                formData.append('category', category);
+            }
+            
+            // Show progress container
+            progressContainer.style.display = 'block';
+            
+            // Disable upload button
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'Uploading...';
+            
+            // Create XMLHttpRequest
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', `/api/upload/${typeMap[type]}`, true);
+            
+            // Track upload progress
+            xhr.upload.addEventListener('progress', (e) => {
+                if (e.lengthComputable) {
+                    const percentComplete = Math.round((e.loaded / e.total) * 100);
+                    progressBar.style.width = `${percentComplete}%`;
+                    progressText.textContent = `${percentComplete}% Complete`;
+                    if (progressSize) {
+                        progressSize.textContent = `${formatFileSize(e.loaded)} / ${formatFileSize(e.total)}`;
+                    }
+                }
+            });
+            
+            // Handle response
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Success
+                    const response = JSON.parse(xhr.responseText);
+                    
+                    // Clear file list
+                    fileList.innerHTML = '';
+                    
+                    // Reset form fields
+                    if (type === 'data') {
+                        document.getElementById('data-description').value = '';
+                        document.getElementById('data-category').selectedIndex = 0;
+                        document.getElementById('data-privacy').selectedIndex = 0;
+                    } else if (type === 'image') {
+                        document.getElementById('image-title').value = '';
+                        document.getElementById('image-description').value = '';
+                        document.getElementById('image-tags').value = '';
+                    } else if (type === 'video') {
+                        document.getElementById('video-title').value = '';
+                        document.getElementById('video-description').value = '';
+                        document.getElementById('video-tags').value = '';
+                    } else if (type === 'document') {
+                        document.getElementById('document-title').value = '';
+                        document.getElementById('document-description').value = '';
+                        document.getElementById('document-category').selectedIndex = 0;
+                    }
+                    
+                    // Reset file input
+                    fileInput.value = '';
+                    
+                    // Show success message
+                    alert(`Upload successful: ${response.message}`);
+                    
+                    // Reset progress
+                    setTimeout(() => {
+                        progressContainer.style.display = 'none';
+                        progressBar.style.width = '0%';
+                        progressText.textContent = '0% Complete';
+                        if (progressSize) progressSize.textContent = '0 Bytes / 0 Bytes';
+                        
+                        // Reset button
+                        uploadBtn.disabled = false;
+                        uploadBtn.textContent = `Upload ${type === 'data' ? 'Files' : type === 'image' ? 'Images' : type === 'video' ? 'Videos' : 'Documents'}`;
+                    }, 1000);
+                } else {
+                    // Error
+                    let errorMessage = 'An error occurred during upload.';
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        errorMessage = response.error || errorMessage;
+                    } catch (e) {}
+                    
+                    alert(`Upload failed: ${errorMessage}`);
+                    
+                    // Reset progress and button
+                    progressContainer.style.display = 'none';
+                    uploadBtn.disabled = false;
+                    uploadBtn.textContent = `Upload ${type === 'data' ? 'Files' : type === 'image' ? 'Images' : type === 'video' ? 'Videos' : 'Documents'}`;
+                }
+            };
+            
+            // Handle error
+            xhr.onerror = function() {
+                alert('Upload failed due to a network error.');
+                progressContainer.style.display = 'none';
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = `Upload ${type === 'data' ? 'Files' : type === 'image' ? 'Images' : type === 'video' ? 'Videos' : 'Documents'}`;
+            };
+            
+            // Send request
+            xhr.send(formData);
+        }
+    </script>
+</body>
+</html>
